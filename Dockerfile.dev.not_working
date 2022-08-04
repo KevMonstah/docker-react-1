@@ -1,0 +1,42 @@
+FROM node:16-alpine
+
+RUN mkdir -p /home/kfoley/app2
+
+COPY ./ /home/kfoley/app2
+COPY ./package.json /home/kfoley/app2
+#COPY ./package-lock.json /home/kfoley/app2
+
+WORKDIR /home/kfoley/app2
+
+
+#USER node
+###USER kfoley
+
+# works RUN mkdir -p /home/node/app
+# works WORKDIR '/home/node/app'
+#RUN mkdir -p /home/kfoley/app2
+#WORKDIR '/home/kfoley/app2'
+
+# works COPY --chown=node:node ./package.json ./
+##COPY --chown=kfoley:kfoley ./package.json ./
+#COPY ./package.json /home/kfoley/app2
+# works COPY ./package.json ./
+# works RUN npm install
+RUN npm install --force
+
+RUN addgroup -S dockergroup
+RUN adduser -S -D -h /home/kfoley/app2 kfoley dockergroup
+RUN chown -R kfoley:dockergroup /home/kfoley/app2
+
+# works COPY --chown=node:node ./ ./
+#COPY ./ /home/kfoley/app2
+#COPY ./ ./
+
+#RUN chown -R kfoley /home/kfoley/app2/node_modules
+USER kfoley
+
+EXPOSE 3000
+
+#CMD ["npm", "run", "start"]
+CMD ["npm", "start"]
+

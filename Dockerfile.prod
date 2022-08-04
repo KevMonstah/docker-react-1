@@ -1,0 +1,54 @@
+# two sections .... 
+#
+#  adding the "as builder" tag, makes everything under the FROM in this PHASE
+#
+# this section is the build part ... get deps, then run build
+# will create the directory /app/build, which is the dir we want to share out to
+# the world.  
+FROM node:16-alpine as builder
+WORKDIR '/app'
+COPY package.json .
+RUN npm install
+COPY . .
+RUN npm run build
+
+# /app/build  <--- has what we need, will want to share that out
+
+# this new FROM line indicates the beginning of a new PHASE
+FROM nginx 
+# this means to copy from a different PHASE
+# copy it to the default nginx content directory
+COPY --from=builder /app/build /usr/share/nginx/html
+# start nginx occurs when the nginx container is started up automatically
+
+
+#### multiple hash tag comment lines for the working dockerfile.dev that does
+#### some extra things i'd like to figure out again.
+
+
+#### #RUN mkdir -p /home/node/app
+#### #COPY --chown=node:node ./package.json ./
+#### ##COPY ./package.json ./
+#### #WORKDIR '/home/node/app'
+#### #RUN npm install
+#### #COPY --chown=node:node ./ ./
+#### #USER node
+#### #CMD ["npm", "start"]
+
+
+#### RUN mkdir -p /home/kfoley
+#### RUN mkdir -p /home/kfoley/app2
+#### COPY ./package.json /home/kfoley/app2
+#### COPY ./ /home/kfoley/app2
+#### WORKDIR '/home/kfoley/app2'
+#### RUN npm install
+#### RUN addgroup -S dockergroup
+#### RUN adduser -S -D -h /home/kfoley kfoley dockergroup
+#### RUN chown -R kfoley:dockergroup /home/kfoley
+
+#### ###COPY --chown=kfoley:kfoley ./ ./
+#### #COPY ./ ./
+
+#### USER kfoley
+#### CMD ["npm", "start"]
+

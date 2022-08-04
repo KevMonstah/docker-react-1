@@ -1,0 +1,19 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3500:3000"
+    volumes:
+      - /home/kfoley/app2/node_modules
+      - .:/home/kfoley/app2
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /home/kfoley/app2/node_modules
+      - .:/home/kfoley/app2
+    command: ["npm", "run", "test"]

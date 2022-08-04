@@ -1,0 +1,28 @@
+FROM node:16-alpine
+
+#RUN mkdir -p /home/node/app
+#COPY --chown=node:node ./package.json ./
+##COPY ./package.json ./
+#WORKDIR '/home/node/app'
+#RUN npm install
+#COPY --chown=node:node ./ ./
+#USER node
+#CMD ["npm", "start"]
+
+
+RUN mkdir -p /home/kfoley
+RUN mkdir -p /home/kfoley/app2
+COPY ./package.json /home/kfoley/app2
+COPY ./ /home/kfoley/app2
+WORKDIR '/home/kfoley/app2'
+RUN npm install
+RUN addgroup -S dockergroup
+RUN adduser -S -D -h /home/kfoley kfoley dockergroup
+RUN chown -R kfoley:dockergroup /home/kfoley
+
+###COPY --chown=kfoley:kfoley ./ ./
+#COPY ./ ./
+
+USER kfoley
+CMD ["npm", "start"]
+
